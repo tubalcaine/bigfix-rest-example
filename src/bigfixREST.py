@@ -46,5 +46,36 @@ class bigfixRESTConnection():
 
         return None
 
-    def flattenQueryResult(self, qres):
-        return None
+    # The idea of this stub method is that we can parse up the return tuple, mangling the
+    # relevance property names to single tokens, and then returning an array of dictionaries,
+    # each row of which contains a "row" entry with a flat array and a "dict" entry with
+    # the mangled names and values. Usually when you write a relevance query, you know what the
+    # positions are in absolute terms. I haven't decided if this is a good idea...
+#    def flattenQueryResult(self, qres):
+#        return None
+
+    def takeSourcedFixletAction(self, targetList, siteId, fixletId, actionId = "Action1", title = "Programmatic Action from Python Script"):
+        templ = '''\
+<?xml version="1.0" encoding="UTF-8" ?>
+<BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+<SourcedFixletAction>
+	<SourceFixlet>
+		<SiteID>__SiteID__</SiteID>
+		<FixletID>__FixletID__</FixletID>
+		<Action>__ActionID__</Action>
+	</SourceFixlet>
+	<Target>
+        __TargetList__
+	</Target>
+	<Settings>
+	</Settings>
+	<Title>__Title__</Title>
+</SourcedFixletAction>
+</BES>
+'''.strip()
+
+        templ.replace("__SiteID__", siteId)
+        templ.replace("__FixletID__", fixletId)
+        templ.replace("__ActionID__", actionId)
+        templ.replace("__Title__", title)
+
