@@ -1,5 +1,6 @@
 import requests
 import json
+import xml.etree.ElementTree as ET
 
 # This is here ONLY to suppress self-signed certoficate warnings
 import urllib3
@@ -7,6 +8,25 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # End of warning supression
 
 
+## bigFixActionResult class
+class bigfixActionResult():
+
+    def __init__(self, resxml):
+        self.xml = resxml
+        self.ptree = ET.fromstring(resxml)
+
+    def getActionID(self):
+        return None
+
+    def getActionURL(self):
+        return None
+
+    def getActionResultXML(self):
+        return self.xml
+
+
+
+## bigfixRESTConnection class
 class bigfixRESTConnection():
 
     def __init__(self, bfserver, bfport, bfuser, bfpass):
@@ -74,8 +94,34 @@ class bigfixRESTConnection():
 </BES>
 '''.strip()
 
-        templ.replace("__SiteID__", siteId)
-        templ.replace("__FixletID__", fixletId)
-        templ.replace("__ActionID__", actionId)
-        templ.replace("__Title__", title)
+        templ = templ.replace("__SiteID__", str(siteId))
+        templ = templ.replace("__FixletID__", str(fixletId))
+        templ = templ.replace("__ActionID__", actionId)
+        templ = templ.replace("__Title__", title)
+
+        targets = ""
+        for tgt in targetList:
+            targets += "<ComputerName>" + tgt + "</ComputerName>\n"
+
+        templ = templ.replace("__TargetList__", targets)
+        
+        qheader = {
+            'Content-Type' : 'application/x-www-form-urlencoded'
+        }
+
+        req = requests.Request('POST'
+            , self.url + "/api/actions"
+            , headers=qheader
+            , data=templ
+        )
+
+        prepped = self.sess.prepare_request(req)
+            
+        result = self.sess.send(prepped, verify = False)
+
+        if (result.status_code == 200):
+            print(result)
+            return bigfixActionResult(result.content)
+        else:
+            return None
 
