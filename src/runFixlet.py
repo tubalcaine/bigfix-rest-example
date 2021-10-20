@@ -11,14 +11,25 @@ conf = parser.parse_args()
 
 bf = bigfixREST.bigfixRESTConnection(conf.bfserver, conf.bfport, conf.bfuser, conf.bfpass)
 
-qres = bf.srQueryJson(f"(id of it, id of site of it | -1, content id of default action of it, concatenation \"~\" of names of applicable computers of it, name of it) of bes fixlets whose (exists applicable computer of it and exists default action of it and exists match (regex \"{conf.match}\") of name of it)")
+query = f'''
+(id of it, id of site of it | -1, 
+content id of default action of it, 
+concatenation \"|\" of names of applicable computers of it, 
+name of it) 
+ of bes fixlets whose (exists applicable computer of it and 
+ exists default action of it and 
+ exists match (regex \"{conf.match}\") of name of it)'''.strip()
+
+qres = bf.srQueryJson(query)
 
 print(qres)
 
 for fixlet in qres["result"]:
     print(fixlet)
-    tgtList = fixlet[4].split("~")
+    tgtList = fixlet[3].split("|")
     bfar = bf.takeSourcedFixletAction(tgtList, fixlet[1], fixlet[0])
+    print(bfar.getActionResultXML)
     print(bfar.getActionURL())
+    print(bfar.getActionID)
 
 exit(0)

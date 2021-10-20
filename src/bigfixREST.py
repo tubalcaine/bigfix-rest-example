@@ -13,13 +13,20 @@ class bigfixActionResult():
 
     def __init__(self, resxml):
         self.xml = resxml
-        self.ptree = ET.fromstring(resxml)
+        self.root = ET.fromstring(resxml)
 
     def getActionID(self):
+        thing = self.root.findall("Action/ID")
+        id = thing.tag
         return None
 
+
     def getActionURL(self):
-        return None
+        thing = self.root.findall("Action")
+        attrs = thing[0].attrib
+
+        return attrs["Resource"]
+
 
     def getActionResultXML(self):
         return self.xml
