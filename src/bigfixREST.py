@@ -17,14 +17,13 @@ class bigfixActionResult():
 
     def getActionID(self):
         thing = self.root.findall("Action/ID")
-        id = thing.tag
-        return None
+        id = thing[0].text
+        return id
 
 
     def getActionURL(self):
         thing = self.root.findall("Action")
         attrs = thing[0].attrib
-
         return attrs["Resource"]
 
 

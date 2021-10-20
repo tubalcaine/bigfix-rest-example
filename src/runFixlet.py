@@ -27,9 +27,13 @@ print(qres)
 for fixlet in qres["result"]:
     print(fixlet)
     tgtList = fixlet[3].split("|")
-    bfar = bf.takeSourcedFixletAction(tgtList, fixlet[1], fixlet[0])
-    print(bfar.getActionResultXML)
+    bfar = bf.takeSourcedFixletAction(tgtList
+        , fixlet[1]
+        , fixlet[0]
+        , actionId = fixlet[2]
+        , title = "runFixlet.py - " + fixlet[4])
+    print(bfar.getActionResultXML())
     print(bfar.getActionURL())
-    print(bfar.getActionID)
+    print(bfar.getActionID())
 
 exit(0)
