@@ -1,4 +1,5 @@
 .vscode/launch.json
-src/__pycache__/*
+src/__pycache__/*   
 dist/*
 build/*
+runFixlet.spec

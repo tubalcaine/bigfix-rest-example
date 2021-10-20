@@ -2,11 +2,11 @@ import argparse
 import bigfixREST
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-s", "--bfserver", type=string, help="BigFix REST Server name/IP address")
+parser.add_argument("-s", "--bfserver", type=str, help="BigFix REST Server name/IP address")
 parser.add_argument("-p", "--bfport", type=int, help="BigFix Port number (default 52311)", default=52311)
-parser.add_argument("-U", "--bfuser", type=string, help="BigFix Console/REST User name")
-parser.add_argument("-P", "--bfpass", type=string, help="BigFix Console/REST Password")
-parser.add_argument("-m", "--match", type=string, help="Fixlet name pattern to match")
+parser.add_argument("-U", "--bfuser", type=str, help="BigFix Console/REST User name")
+parser.add_argument("-P", "--bfpass", type=str, help="BigFix Console/REST Password")
+parser.add_argument("-m", "--match", type=str, help="Fixlet name pattern to match")
 parser.parse_args()
 
 bf = bigfixREST.bigfixRESTConnection(parser.bfserver, parser.bfport, parser.bfuser, parser.bfpass)
@@ -17,7 +17,6 @@ print(qres)
 
 for fixlet in qres["result"]:
     print(fixlet)
-    s = ""
     tgtList = fixlet[4].split("~")
     bfar = bf.takeSourcedFixletAction(tgtList, fixlet[1], fixlet[0])
     print(bfar.getActionURL())
