@@ -3,3 +3,4 @@ src/__pycache__/*
 dist/*
 build/*
 runFixlet.spec
+Pipfile.lock
